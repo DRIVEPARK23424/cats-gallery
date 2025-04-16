@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps, defineEmits } from 'vue'
+import { defineProps, defineEmits, watch } from 'vue'
 
 const props = defineProps({
   isOpen: {
@@ -17,6 +17,14 @@ const emits = defineEmits(['close'])
 function closeModal() {
   emits('close')
 }
+
+watch(() => props.isOpen, (newVal) => {
+  if (newVal) {
+    document.body.style.overflow = 'hidden'
+  } else {
+    document.body.style.overflow = ''
+  }
+})
 </script>
 
 <template>
@@ -26,7 +34,7 @@ function closeModal() {
   >
     <div class="modal-content">
       <span class="close" @click="closeModal">×</span>
-      <img :src="catImage" alt="Cat" />
+      <img :src="catImage" alt="Cat in full size" />
     </div>
   </div>
 </template>
@@ -35,26 +43,31 @@ function closeModal() {
 .modal {
   position: fixed;
   top: 0; left: 0;
-  max-width: 100%;
-  max-height: 100%;
+  width: 100vw;
+  height: 100vh;
   display: flex; 
   justify-content: center; 
   align-items: center;
   background-color: rgba(0,0,0,0.7);
+  z-index: 100;
 }
 
 .modal-content {
   position: relative;
   background: #fff;
-  max-width: 90%;
-  max-height: 90%;
+  max-width: 90vw;
+  max-height: 90vh;
   border-radius: 8px;
+  overflow: hidden;
+  z-index: 101;
 }
 
 .modal-content img {
-  animation: fadeIn 0.6s ease-in;
+  max-width: 100%;
+  max-height: 100%;
+  animation: fadeIn 0.6s ease-in forwards;
   opacity: 0;
-  animation-fill-mode: forwards;
+  display: block;
 }
 
 @keyframes fadeIn {
@@ -64,17 +77,17 @@ function closeModal() {
 
 .close {
   position: absolute;
-  font-weight: bold;
   top: -3px;
-  right: 17px;
+  right: 10px;
+  font-weight: bold;
   cursor: pointer;
-  font-size: 3rem;
+  font-size: 2.5rem;
+  z-index: 10001;
   transition: color 0.3s;
-  z-index: 2;
+  color: #333;
 }
 
 .close:hover {
   color: #516bff;
 }
-
 </style>
